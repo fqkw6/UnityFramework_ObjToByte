@@ -62,23 +62,21 @@ public class ObjToByte : MonoBehaviour
 		return (T)bf.Deserialize(ms);
 	}
 
-
 	/// <summary>
 	/// 对象序列化为字节流
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <param name="type"></param>
 	/// <returns></returns>
-	public static byte[] ToBytes<T>(T type)
+	public static byte[] ToBytes<T>(T obj)
 	{
-		BinaryFormatter bf = new BinaryFormatter();
-
-
-		MemoryStream ms = new MemoryStream();
-		bf.Serialize(ms, type);
-		return ms.GetBuffer();
+		using (MemoryStream ms = new MemoryStream())
+		{
+			IFormatter formatter = new BinaryFormatter();
+			formatter.Serialize(ms, obj); 
+			return ms.GetBuffer();
+		}
 	}
-
 
 	/// <summary>
 	/// 字节流反序列化为对象
@@ -86,16 +84,13 @@ public class ObjToByte : MonoBehaviour
 	/// <typeparam name="T"></typeparam>
 	/// <param name="bytes"></param>
 	/// <returns></returns>
-	public static T BytesTo<T>(byte[] bytes)
+	public static T BytesTo<T>(byte[] Bytes)
 	{
-		BinaryFormatter bf = new BinaryFormatter();
-
-
-		MemoryStream ms = new MemoryStream();
-		ms.Write(bytes, 0, bytes.Length);
-		return (T)bf.Deserialize(ms);
-
-
+		using (MemoryStream ms = new MemoryStream(Bytes))
+		{
+			IFormatter formatter = new BinaryFormatter(); 
+			return (T)formatter.Deserialize(ms);
+		}
 	}
 
 
